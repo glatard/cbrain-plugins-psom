@@ -202,11 +202,34 @@ class NiakResult < FileCollection
 
   # Custom edits in the javascript code
   def tweak_js_in_line line,dir_name
+    # links in registration page
     new_line = line.gsub("newFigT1.src = \"registration/\" + subject + \"_anat.png\";",
                          "newFigT1.src = \"content?arguments=#{dir_name}registration%2F\" + subject + \"_anat.png&content_loader=collection_file&content_viewer=off&viewer=image_file&viewer_userfile_class=ImageFile\";")
-    new_line = new_line.gsub("newFigBOLD.src = \"registration/\" + subject + \"_func.png\";",
-                         "newFigBOLD.src = \"content?arguments=#{dir_name}registration%2F\" + subject + \"_func.png&content_loader=collection_file&content_viewer=off&viewer=image_file&viewer_userfile_class=ImageFile\";")
-
+    new_line.gsub!("newFigBOLD.src = \"registration/\" + subject + \"_func.png\";",
+                   "newFigBOLD.src = \"content?arguments=#{dir_name}registration%2F\" + subject + \"_func.png&content_loader=collection_file&content_viewer=off&viewer=image_file&viewer_userfile_class=ImageFile\";")
+    
+    # links in motion page
+    if new_line.start_with?("spacerStereo.src = \"target_stereo_sub")
+      new_line.gsub!("spacerStereo.src = \"target_stereo",
+                     "spacerStereo.src = \"content?arguments=#{dir_name}motion%2Ftarget_stereo_sub")
+      new_line.gsub!(".png\";",".png&content_loader=collection\
+_file&content_viewer=off&viewer=image_file&viewer_userfile_class=ImageFile\";")
+    end
+    if new_line.start_with?("spacerNative.src = \"target_native_sub")
+      new_line.gsub!("spacerNative.src = \"target_native",
+                     "spacerNative.src = \"content?arguments=#{dir_name}motion%2Ftarget_native")
+      new_line.gsub!(".png\";",".png&content_loader=collection\
+_file&content_viewer=off&viewer=image_file&viewer_userfile_class=ImageFile\";")
+    end
+    
+    new_line.gsub!("../registration.html","registration.html")
+    new_line.gsub!("../index.html","index.html")
+    new_line.gsub!("../assets","assets")
+    new_line.gsub!("motion_stereo","motion%2Fmotion_stereo")
+    new_line.gsub!("motion_report","motion%2Fmotion_report")
+    new_line.gsub!("motion_native","motion%2Fmotion_native")
+    new_line.gsub!(".. href=\"../group.html","group.html&content_loader=html_file")
+    
     return new_line
   end
 
