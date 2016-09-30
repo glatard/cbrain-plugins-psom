@@ -66,6 +66,8 @@ class NiakResult < FileCollection
       new_line = tweak_hrefs_in_line(line,dir_name)
       # Tweaks imgs.
       new_line = tweak_imgs_in_line(new_line,"#{dir_name}")
+      # Tweaks javascripts.
+      new_line = tweak_js_in_line(new_line,"#{dir_name}")
       lines << new_line 
     end
     return lines.join
@@ -113,6 +115,7 @@ class NiakResult < FileCollection
     end
 
     if link.include?("newFigBOLD") || link.include?("newFigT1")
+      # these links have been tweaked in method tweak_js_of_lines already (they are written by javascript code)
       return link
     end
 
@@ -197,6 +200,17 @@ class NiakResult < FileCollection
     return new_line
   end
 
+  # Custom edits in the javascript code
+  def tweak_js_in_line line,dir_name
+    new_line = line.gsub("newFigT1.src = \"registration/\" + subject + \"_anat.png\";",
+                         "newFigT1.src = \"content?arguments=#{dir_name}registration%2F\" + subject + \"_anat.png&content_loader=collection_file&content_viewer=off&viewer=image_file&viewer_userfile_class=ImageFile\";")
+    new_line = new_line.gsub("newFigBOLD.src = \"registration/\" + subject + \"_func.png\";",
+                         "newFigBOLD.src = \"content?arguments=#{dir_name}registration%2F\" + subject + \"_func.png&content_loader=collection_file&content_viewer=off&viewer=image_file&viewer_userfile_class=ImageFile\";")
+
+    return new_line
+  end
+
+  
   # Re-build a complete page with correct links for the first-level
   # report (report_firstlevel.html) in group analyses.
   def modify_report_first_level
