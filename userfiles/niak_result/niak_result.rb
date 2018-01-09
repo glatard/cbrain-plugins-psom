@@ -34,5 +34,4 @@ class NiakResult < FileCollection
   def self.file_name_pattern #:nodoc:
     /\.niak$/i
   end
-
 end

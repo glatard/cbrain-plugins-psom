@@ -22,8 +22,12 @@
 #
 -%>
 
-
 <br/>
 
-Under construction. When Niak produces HTML analysis reports, they will be available here.
-
+<%= link_to(
+    "Click here to see the NIAK report in a new window.",
+    "#{@userfile.id}/file_collection_content/report/index.html",
+    :class  => "action_link",
+    :target => "_blank",
+  )
+%>
